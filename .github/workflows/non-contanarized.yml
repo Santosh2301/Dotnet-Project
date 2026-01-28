@@ -1,0 +1,33 @@
+name: non-contanarized Build
+
+on:
+ workflow_dispatch: 
+
+jobs:
+ Build:
+   runs-on: ubuntu-latest
+   steps: 
+   - name: checkout            
+     uses: actions/checkout@v6.0.2
+     with:
+      repository: # optional, default is ${{ github.repository }}
+
+   - name: install/setup .net dependiencies
+     uses: actions/setup-dotnet@v4
+     with:
+      dotnet-version: '8.x'
+
+   - name:  .net build
+     uses: Elskom/build-dotnet@v1.1.1
+     with:
+       run: dotnet build
+        
+   - name: Upload/publish artifact
+     uses: EasyDesk/action-dotnet-publish@v1.0.0
+     with:
+      run: |
+       dotnet publish -c Release -o ./publish
+       mkdir staging
+       cp publish/DotNetAddition  staging/
+     
+  
